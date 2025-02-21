@@ -1,0 +1,316 @@
+# Enable Powerlevel9k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+
+# ╔════════════════════════════════════════════════════════════════════════════╗
+# ║ Basics                                                                     ║
+# ╚════════════════════════════════════════════════════════════════════════════╝
+
+export OS="$(uname | tr '[:upper:]' '[:lower:]')"
+
+function __is_available {
+  prog="${1}"
+  os="${2}"
+
+  if [ "${os}" != "" ] && [ "${os}" != "${OS}" ]
+  then 
+    return 1
+  fi
+
+  type "${prog}" > /dev/null 
+  return "$?"
+}
+
+# ╔════════════════════════════════════════════════════════════════════════════╗
+# ║ Exports                                                                    ║
+# ╚════════════════════════════════════════════════════════════════════════════╝
+
+
+export ZSH="$HOME/.oh-my-zsh"
+export XDG_CONFIG_HOME=~/.config/
+export ZSH="$HOME/.oh-my-zsh"
+export FPATH="/home/agent314/git/eza/completions/zsh:$FPATH"
+
+export PATH="/home/agent313/build/apache-maven-3.9.9/bin:$PATH"
+
+JAVA_HOME="/usr/lib/jvm/java-23-openjdk-amd64/bin/java"
+export PATH="$PATH:/home/agent314/.cargo/bin"
+export PATH="$PATH:/home/agent314/Qt/6.8.0/gcc_64/bin"
+export PATH="$PATH:/home/agent314/.local/bin"
+# ========= Go ================
+export PATH="$PATH:/home/agent314/go/bin"
+export ANDROID_HOME=~/Android/Sdk/
+
+
+ZSH_THEME="agnoster"
+
+plugins=(git copyfile copybuffer docker docker-compose nmap virtualenv sudo) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ╔════════════════════════════════════════════════════════════════════════════╗
+# ║ Aliases                                                                    ║
+# ╚════════════════════════════════════════════════════════════════════════════╝
+
+alias chmox="chmod +x"
+
+# https://github.com/eza-community/eza
+__is_available eza \
+&& alias ls='eza  --time-style=relative --git --octal-permissions --icons \
+  --binary -lg' \
+&& alias ll='eza  --time-style=long-iso --git --octal-permissions --icons \
+  --binary -la' \
+&& alias la='eza  --time-style=long-iso --git --octal-permissions         \
+  --binary --changed -lahHgnuU' \
+&& alias l='eza   --time-style=long-iso --git                     --icons \
+  --binary -l --no-time' \
+&& alias lls='eza --time-style=long-iso --git --octal-permissions --icons \
+  --binary -las modified'
+
+
+# https://github.com/sharkdp/bat
+__is_available bat \
+&& alias cat=bat
+
+# https://github.com/neovim/neovim
+__is_available nvim \
+&& alias vi=nvim \
+&& alias vim=nvim \
+&& export EDITOR="nvim"
+
+alias uuid=uuidgen
+alias wget='wget --no-hsts'
+alias rmrf='rm -rf'
+alias ehco=echo
+
+alias tgz='tar -czf'
+alias ugz='tar -xzf'
+alias tbz='tar -cjf'
+alias ubz='tar -xjf'
+
+
+alias my-ip="curl http://ipecho.net/plain; echo"
+
+
+
+
+# ╔════════════════════════════════════════════════════════════════════════════╗
+# ║ What's ...                                                                 ║
+# ╚════════════════════════════════════════════════════════════════════════════╝
+
+function whats() {
+  if ! __is_available units || ! __is_available whatis
+  then 
+    printf "This command requires units(1) and whatis(1)!\n"
+    return 1 
+  fi 
+
+  value=""
+  value_unit=""
+  from_unit=""
+  to=""
+  to_unit=""
+  _in=""
+  _in_unit=""
+
+  if [ "$#" -eq "1" ]
+  then
+    if [ "$1" = "love" ]
+    then 
+      printf "... got to do, got to do with it?\n"
+      return 0 
+    else 
+      whatis "$1"
+      return "$?"
+    fi 
+  elif [ "$#" -eq "2" ]
+  then
+    value_unit="$1"
+    to_unit="$2"
+  elif [ "$#" -eq "3" ]
+  then
+    if [ "$2" = "to" ] || [ "$2" = "in" ] || [ "$2" = "of" ]
+    then 
+      value_unit="$1"
+      to="$2"
+      to_unit="$3"
+    else 
+      value="$1"
+      from_unit="$2"
+      to_unit="$3"
+    fi
+  elif [ "$#" -eq "4" ]
+  then 
+    value="$1"
+    from_unit="$2"
+    to="$3"
+    to_unit="$4"
+  elif [ "$#" -eq "5" ]
+  then
+    value="$1"
+    from_unit=""
+    to="$2"
+    to_unit="$3"
+    _in="$4"
+    _in_unit="$5"
+  else
+    printf "usage: %s <value>[[ ]unit] [to/in|of] <to/in unit/value|of value> [in %%]\n" "$0"
+    printf "\n"
+    printf "examples:\n"
+    printf "\n"
+    printf "  %s 20 kmh in mph\n" "$0"
+    printf "  %s 3 cups in ml\n" "$0"
+    printf "  %s 6ft to m\n" "$0"
+    printf "  %s 10%% of 120\n" "$0"
+    printf "  %s 10 of 200 in %%\n" "$0"
+    printf "  %s 10 to 100 in %%\n" "$0"
+    printf "\n"
+    return 1 
+  fi
+
+  if [ "${value_unit}" != "" ]
+  then
+    combined="$(printf "%s" "${value_unit}" | grep -Eo '[[:alpha:]\$\%]+|[0-9]+')"
+    value="$(printf "%s" "${combined}" | head -n 1)"
+    from_unit="$(printf "%s" "${combined}" | tail -n 1)"
+  fi
+
+  from_unit=$(printf "%s" "${from_unit}" | tr '[:upper:]' '[:lower:]')
+  to_unit=$(printf "%s" "${to_unit}" | tr '[:upper:]' '[:lower:]')
+
+  units_from="${value}${from_unit}"
+  units_to="${to_unit}"
+
+  case "${from_unit}" in 
+    "f")
+      units_from="tempF(${value})"
+      ;;
+    "c")
+      units_from="tempC(${value})"
+      ;;
+    "kmh")
+      units_from="${value} km/hour"
+      ;;
+  esac 
+
+  case "${to_unit}" in 
+    "f")
+      units_to="tempF"
+      ;;
+    "c")
+      units_to="tempC"
+      ;;
+    "kmh")
+      units_to="km/hour"
+      ;;
+  esac
+  
+  if [ "${from_unit}" = "%" ]
+  then 
+    eva "(${value} / 100) * ${units_to}" | tr -d ' '
+    return "$?"
+  elif [ "${_in}" != "" ] && [ "${_in_unit}" = "%" ]
+  then 
+    if [ "${to}" = "of" ]
+    then
+      eva "(${value} / ${to_unit}) * 100" | tr -d ' '
+      return "$?"
+    elif [ "${to}" = "to" ]
+    then 
+      eva "((${to_unit} - ${value}) / ${value}) * 100" | tr -d ' '
+      return "$?"
+    fi
+  else
+    units --compact -1 "${units_from}" "${units_to}"
+    return "$?"
+  fi
+}
+
+
+
+# ╔════════════════════════════════════════════════════════════════════════════╗
+# ║ Dotfiles management                                                        ║
+# ╚════════════════════════════════════════════════════════════════════════════╝
+
+export DOTFILES="${HOME}/projects/dotfiles"
+
+function cp2remote ()
+{
+  echo "Copying ${1} \n"
+  cp "${HOME}/${1}" "${DOTFILES}/${1}"
+}
+
+function df2remote()
+{
+  cp "${HOME}/.zshrc" "${DOTFILES}/.zshrc"
+  cp2remote ".kopiaignore"
+  cp2remote ".vimrc"
+  cp2remote ".tmux.conf"
+  cp2remote ".tmux.cheatsheet"
+
+
+  rm -rf "${DOTFILES}/.config/*"
+ 
+  mkdir -p "${DOTFILES}/.config/nvim"
+  mkdir -p "${DOTFILES}/.config/wireshark" 
+  mkdir -p "${DOTFILES}/.config/terminator"       
+  mkdir -p "${DOTFILES}/.config/alacritty"  
+                                            
+
+  rsync -avH \
+    --exclude-from="${HOME}/.exclude" \
+    "${XDG_CONFIG_HOME}/nvim" "${DOTFILES}/.config/nvim" --delete-before
+#  rsync -avH \                                                           
+#    --exclude-from="${HOME}/.exclude" \                              
+#    "${XDG_CONFIG_HOME}/wireshark" "${DOTFILES}/.config/wireshark"--delete-before 
+                                                                         
+#  rsync -avH \                                                                     
+#  --exclude-from="${HOME}/.exclude" \                                        
+#  "${XDG_CONFIG_HOME}/terminator" "${DOTFILES}/.config/terminator"--delete-before  
+                                                                                 
+#   rsync -avH \                                                                      
+#   --exclude-from="${HOME}/.exclude" \                                           
+#  "${XDG_CONFIG_HOME}/alacritty" "${DOTFILES}/.config/alacritty"--delete-before   
+
+
+
+  cargo install --list > "${DOTFILES}/cargo_install_--list"
+
+}
+
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+
+
+# ╔════════════════════════════════════════════════════════════════════════════╗ 
+# ║ OMZ & p10k                                                                 ║ 
+# ╚════════════════════════════════════════════════════════════════════════════╝ 
+                                                                                 
+source $ZSH/oh-my-zsh.sh                                                         
+source ~/powerlevel10k/powerlevel10k.zsh-theme                                   
+                                                                                 
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.                 
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh                                     
+                                                                                 
+                                                                                 

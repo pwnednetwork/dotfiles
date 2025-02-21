@@ -1,0 +1,20 @@
+bat v0.24.0:
+    bat
+difftastic v0.62.0:
+    difft
+du-dust v1.1.1:
+    dust
+exa v0.10.1:
+    exa
+git-delta v0.18.2:
+    delta
+lsd v1.1.5 (https://github.com/lsd-rs/lsd.git?branch=master#1636cab4):
+    lsd
+riffdiff v3.3.8:
+    riff
+server_pulse v0.1.0 (/home/agent314/git/audio_relay/server):
+    listen
+    server_pulse
+strip-ansi-cli v0.1.0:
+    strip-ansi
+    strip-ansi-completions
