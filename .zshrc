@@ -1,4 +1,27 @@
+
+# ╔──────────────────────────────────────────────────────────────────────────╗
+# │                                                                          │
+# │    █████╗  ██████╗ ███████╗███╗   ██╗████████╗    ██████╗  ██╗██╗  ██╗   │
+# │   ██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝    ╚════██╗███║██║  ██║   │
+# │   ███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║        █████╔╝╚██║███████║   │
+# │   ██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║        ╚═══██╗ ██║╚════██║   │
+# │   ██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║       ██████╔╝ ██║     ██║   │
+# │   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝       ╚═════╝  ╚═╝     ╚═╝   │
+# │                                                                          │
+# ╚──────────────────────────────────────────────────────────────────────────╝
+# .zshrc 
+# Majorly borrowing chunks of coode and inspiration from  https://github.com/mrusme/dotfiles/tree/master
+# Thanks mrusme!
+
+
+
+
+# ╔════════════════════════════════════════════════════════════════════════════╗
+# ║ p10k stuff                                                                 ║
+# ╚════════════════════════════════════════════════════════════════════════════╝
+
 # Enable Powerlevel9k instant prompt. Should stay close to the top of ~/.zshrc.
+#
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
@@ -34,7 +57,6 @@ function __is_available {
 
 export ZSH="$HOME/.oh-my-zsh"
 export XDG_CONFIG_HOME=~/.config/
-export ZSH="$HOME/.oh-my-zsh"
 export FPATH="/home/agent314/git/eza/completions/zsh:$FPATH"
 
 export PATH="/home/agent313/build/apache-maven-3.9.9/bin:$PATH"
@@ -51,19 +73,6 @@ export ANDROID_HOME=~/Android/Sdk/
 ZSH_THEME="agnoster"
 
 plugins=(git copyfile copybuffer docker docker-compose nmap virtualenv sudo) 
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # ╔════════════════════════════════════════════════════════════════════════════╗
 # ║ Aliases                                                                    ║
@@ -253,11 +262,11 @@ export DOTFILES="${HOME}/projects/dotfiles"
 
 function cp2remote ()
 {
-  echo "Copying ${1} \n"
+  echo "Copying ${1} from ${HOME} to ${DOTFILES}\n"
   cp "${HOME}/${1}" "${DOTFILES}/${1}"
 }
 
-function df2remote()
+function dotfiles-to-staging()
 {
   cp "${HOME}/.zshrc" "${DOTFILES}/.zshrc"
   cp2remote ".kopiaignore"
@@ -295,11 +304,29 @@ function df2remote()
 
 }
 
+function cp2local()
+{
+  echo "Copying ${1} from ${DOTFILES} to ${HOME}"
+   cp "${DOTFILES}/${1}" "${HOME}/${1}"
+}
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
 
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+function dotfiles-to-local() {
+  printf "are you sure? (y/n) "
+  read -r confirmation
+
+  [ "${confirmation}" != "y" ] && return 1
+
+  cp2local ".zshrc"
+  cp2local ".tmux.conf"
+  cp2local ".tmux.cheathseet"
+  cp2local ".vimrc"
+  cp2local ".kopiaignore"
+
+  rsync -avH "${DOTFILES}/.config/nvim" "${HOME}/.config/nvim"
+
+ }
+
 
 
 
@@ -314,3 +341,8 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh                                     
                                                                                  
                                                                                  
+
+
+export SDKMAN_DIR="$HOME/.sdkman"
+
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
