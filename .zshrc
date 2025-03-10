@@ -65,6 +65,7 @@ JAVA_HOME="/usr/lib/jvm/java-23-openjdk-amd64/bin/java"
 export PATH="$PATH:/home/agent314/.cargo/bin"
 export PATH="$PATH:/home/agent314/Qt/6.8.0/gcc_64/bin"
 export PATH="$PATH:/home/agent314/.local/bin"
+export PATH="$PATH:/home/agent314/.emacs.d/bin/"
 # ========= Go ================
 export PATH="$PATH:/home/agent314/go/bin"
 export ANDROID_HOME=~/Android/Sdk/
@@ -118,8 +119,8 @@ alias ubz='tar -xjf'
 alias my-ip="curl http://ipecho.net/plain; echo"
 
 
-
-
+alias lazyvim="NVIM_APPNAME=lazyvim nvim"
+alias chadvim="NVIM_APPNAME=nvchad nvim"
 # ╔════════════════════════════════════════════════════════════════════════════╗
 # ║ What's ...                                                                 ║
 # ╚════════════════════════════════════════════════════════════════════════════╝
@@ -266,6 +267,14 @@ function cp2remote ()
   cp "${HOME}/${1}" "${DOTFILES}/${1}"
 }
 
+function dotconfig2remote()
+{
+  echo "rsyncing ${1} from ${XDG_CONFIG_HOME}/${1} to ${DOTFILES}/.config/${1}\n"
+ rsync -avH \
+   --exclude-from="${HOME}/.exclude" \                                   
+   "${XDG_CONFIG_HOME}/${1}" "${DOTFILES}/.config/${1}" --delete-before
+ }
+
 function dotfiles-to-staging()
 {
   cp "${HOME}/.zshrc" "${DOTFILES}/.zshrc"
@@ -273,33 +282,19 @@ function dotfiles-to-staging()
   cp2remote ".vimrc"
   cp2remote ".tmux.conf"
   cp2remote ".tmux.cheatsheet"
-
+  cp2remote ".exclude"
 
   rm -rf "${DOTFILES}/.config/*"
  
   mkdir -p "${DOTFILES}/.config/nvim"
-  mkdir -p "${DOTFILES}/.config/wireshark" 
-  mkdir -p "${DOTFILES}/.config/terminator"       
   mkdir -p "${DOTFILES}/.config/alacritty"  
-                                            
+  mkdir -p "${DOTFILES}/.config/lazyvim"  
+  mkdir -p "${DOTFILES}/.config/nvchad"  
 
-  rsync -avH \
-    --exclude-from="${HOME}/.exclude" \
-    "${XDG_CONFIG_HOME}/nvim" "${DOTFILES}/.config/nvim" --delete-before
-#  rsync -avH \                                                           
-#    --exclude-from="${HOME}/.exclude" \                              
-#    "${XDG_CONFIG_HOME}/wireshark" "${DOTFILES}/.config/wireshark"--delete-before 
-                                                                         
-#  rsync -avH \                                                                     
-#  --exclude-from="${HOME}/.exclude" \                                        
-#  "${XDG_CONFIG_HOME}/terminator" "${DOTFILES}/.config/terminator"--delete-before  
-                                                                                 
-#   rsync -avH \                                                                      
-#   --exclude-from="${HOME}/.exclude" \                                           
-#  "${XDG_CONFIG_HOME}/alacritty" "${DOTFILES}/.config/alacritty"--delete-before   
-
-
-
+  dotconfig2remote "nvim"
+  dotconfig2remote "lazyvim"
+  dotconfig2remote "nvchad"
+  dotconfig2remote "alacritty"
   cargo install --list > "${DOTFILES}/cargo_install_--list"
 
 }
@@ -316,15 +311,18 @@ function dotfiles-to-local() {
   read -r confirmation
 
   [ "${confirmation}" != "y" ] && return 1
-
+  
   cp2local ".zshrc"
   cp2local ".tmux.conf"
   cp2local ".tmux.cheathseet"
   cp2local ".vimrc"
   cp2local ".kopiaignore"
+  cp2local ".exclude"
 
   rsync -avH "${DOTFILES}/.config/nvim" "${HOME}/.config/nvim"
-
+  rsync -avH "${DOTFILES}/.config/alacritty" "${HOME}/.config/alacritty"
+  rsync -avH "${DOTFILES}/.config/lazyvim" "${HOME}/.config/lazyvim"
+  rsync -avH "${DOTFILES}/.config/chadvim" "${HOME}/.config/chadvim"
  }
 
 
@@ -346,3 +344,16 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 export SDKMAN_DIR="$HOME/.sdkman"
 
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+if command -v zoxide > /dev/null; then
+  eval "$(zoxide init zsh)"
+fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# Source the Lazyman shell initialization for aliases and nvims selector
+# shellcheck source=.config/nvim-Lazyman/.lazymanrc
+[ -f ~/.config/nvim-Lazyman/.lazymanrc ] && source ~/.config/nvim-Lazyman/.lazymanrc
+# Source the Lazyman .nvimsbind for nvims key binding
+# shellcheck source=.config/nvim-Lazyman/.nvimsbind
+[ -f ~/.config/nvim-Lazyman/.nvimsbind ] && source ~/.config/nvim-Lazyman/.nvimsbind
