@@ -1,0 +1,32 @@
+[window]
+opacity = 0.9
+
+padding.x = 10 
+padding.y = 10
+
+decorations = "full"
+
+[font]
+normal.family = "VictorMono Nerd Font"
+bold.family = "VictorMono Nerd Font"
+italic.family = "VictorMono Nerd Font"
+size = 15.0
+
+[general]
+import = [
+    "~/.config/alacritty/themes/themes/github_dark_high_contrast.toml"
+]
+[[keyboard.bindings]]
+key = "C"
+mods = "Control"
+action = "Copy"
+
+[[keyboard.bindings]]
+key = "Y"
+mods = "Control"
+action = "Paste"
+
+[[keyboard.bindings]]
+key = "C"
+mods = "Control|Shift"
+chars = "\u0003"  # Preserve Ctrl+Shift+C for SIGINT

@@ -1,0 +1,19 @@
+[general]
+import = [
+    "~/.config/alacritty/themes/themes/gruvbox_dark.toml"
+]
+
+[[keyboard.bindings]]
+key = "C"
+mods = "Control"
+action = "Copy"
+
+[[keyboard.bindings]]
+key = "V"
+mods = "Control"
+action = "Paste"
+
+[[keyboard.bindings]]
+key = "C"
+mods = "Super|Shift"
+chars = "\u0003"  # Send SIGINT with Hyper+C (CapsLock+C)
