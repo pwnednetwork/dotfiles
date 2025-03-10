@@ -57,17 +57,17 @@ function __is_available {
 
 export ZSH="$HOME/.oh-my-zsh"
 export XDG_CONFIG_HOME=~/.config/
-export FPATH="/home/agent314/git/eza/completions/zsh:$FPATH"
+export FPATH="/home/$USER/git/eza/completions/zsh:$FPATH"
 
-export PATH="/home/agent313/build/apache-maven-3.9.9/bin:$PATH"
+export PATH="/home/$USER/build/apache-maven-3.9.9/bin:$PATH"
 
 JAVA_HOME="/usr/lib/jvm/java-23-openjdk-amd64/bin/java"
-export PATH="$PATH:/home/agent314/.cargo/bin"
-export PATH="$PATH:/home/agent314/Qt/6.8.0/gcc_64/bin"
-export PATH="$PATH:/home/agent314/.local/bin"
-export PATH="$PATH:/home/agent314/.emacs.d/bin/"
+export PATH="$PATH:/home/$USER/.cargo/bin"
+export PATH="$PATH:/home/$USER/Qt/6.8.0/gcc_64/bin"
+export PATH="$PATH:/home/$USER/.local/bin"
+export PATH="$PATH:/home/$USER/.emacs.d/bin/"
 # ========= Go ================
-export PATH="$PATH:/home/agent314/go/bin"
+export PATH="$PATH:/home/$USER/go/bin"
 export ANDROID_HOME=~/Android/Sdk/
 
 
@@ -269,10 +269,10 @@ function cp2remote ()
 
 function dotconfig2remote()
 {
-  echo "rsyncing ${1} from ${XDG_CONFIG_HOME}/${1} to ${DOTFILES}/.config/${1}\n"
+  echo "rsyncing ${1} from ${XDG_CONFIG_HOME}${1} to ${DOTFILES}/.config/${1}\n"
  rsync -avH \
    --exclude-from="${HOME}/.exclude" \                                   
-   "${XDG_CONFIG_HOME}/${1}" "${DOTFILES}/.config/${1}" --delete-before
+   "${XDG_CONFIG_HOME}${1}" "${DOTFILES}/.config/${1}" --delete-before
  }
 
 function dotfiles-to-staging()
@@ -283,8 +283,8 @@ function dotfiles-to-staging()
   cp2remote ".tmux.conf"
   cp2remote ".tmux.cheatsheet"
   cp2remote ".exclude"
-
-  rm -rf "${DOTFILES}/.config/*"
+  cp2remote ".zshrc"
+#  rm -rf "${DOTFILES}/.config/*"
  
   mkdir -p "${DOTFILES}/.config/nvim"
   mkdir -p "${DOTFILES}/.config/alacritty"  
