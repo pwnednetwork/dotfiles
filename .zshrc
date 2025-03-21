@@ -66,10 +66,13 @@ export PATH="$PATH:/home/$USER/.cargo/bin"
 export PATH="$PATH:/home/$USER/Qt/6.8.0/gcc_64/bin"
 export PATH="$PATH:/home/$USER/.local/bin"
 export PATH="$PATH:/home/$USER/.emacs.d/bin/"
+# ========== RISCV toolchain =========
+export PATH="$PATH:/opt/riscv/bin/"
 # ========= Go ================
 export PATH="$PATH:/home/$USER/go/bin"
 export ANDROID_HOME=~/Android/Sdk/
 
+export PATH="$PATH:/root/.carg/bin/"
 
 ZSH_THEME="agnoster"
 
@@ -115,12 +118,14 @@ alias ugz='tar -xzf'
 alias tbz='tar -cjf'
 alias ubz='tar -xjf'
 
+alias rsync-copy="rsync -ahv --inplace --no-whole-file --info=progress2"
 
 alias my-ip="curl http://ipecho.net/plain; echo"
 
-
+alias lsblk="lsblk -o +fstype,label,uuid,partuuid"
 alias lazyvim="NVIM_APPNAME=lazyvim nvim"
 alias chadvim="NVIM_APPNAME=nvchad nvim"
+alias vim="lazyvim"
 # ╔════════════════════════════════════════════════════════════════════════════╗
 # ║ What's ...                                                                 ║
 # ╚════════════════════════════════════════════════════════════════════════════╝
@@ -270,9 +275,9 @@ function cp2remote ()
 function dotconfig2remote()
 {
   echo "rsyncing ${1} from ${XDG_CONFIG_HOME}${1} to ${DOTFILES}/.config/${1}\n"
- rsync -avH \
-   --exclude-from="${HOME}/.exclude" \                                   
-   "${XDG_CONFIG_HOME}${1}" "${DOTFILES}/.config/${1}" --delete-before
+# rsync -avH \
+#   --exclude-from="${HOME}/.exclude" \                                   
+#   "${XDG_CONFIG_HOME}${1}" "${DOTFILES}/.config/${1}" --delete-before
  }
 
 function dotfiles-to-staging()
@@ -284,18 +289,22 @@ function dotfiles-to-staging()
   cp2remote ".tmux.cheatsheet"
   cp2remote ".exclude"
   cp2remote ".zshrc"
-#  rm -rf "${DOTFILES}/.config/*"
+ rm -rf "${DOTFILES}/.config/*"
  
-  mkdir -p "${DOTFILES}/.config/nvim"
-  mkdir -p "${DOTFILES}/.config/alacritty"  
-  mkdir -p "${DOTFILES}/.config/lazyvim"  
-  mkdir -p "${DOTFILES}/.config/nvchad"  
+ # mkdir -p "${DOTFILES}/.config/nvim"
+ # mkdir -p "${DOTFILES}/.config/alacritty"  
+ # mkdir -p "${DOTFILES}/.config/lazyvim"  
+ # mkdir -p "${DOTFILES}/.config/nvchad"  
 
-  dotconfig2remote "nvim"
-  dotconfig2remote "lazyvim"
-  dotconfig2remote "nvchad"
-  dotconfig2remote "alacritty"
-  cargo install --list > "${DOTFILES}/cargo_install_--list"
+ # dotconfig2remote "nvim"
+ # dotconfig2remote "lazyvim"
+ # dotconfig2remote "nvchad"
+ # dotconfig2remote "alacritty"
+ 
+rsync-copy --exclude-from="${HOME}/.exclude" "${HOME}/.config/lazyvim" "${DOTFILES}/.config/"
+rsync-copy --exclude-from="${HOME}/.exclude" "${HOME}/.config/lvim" "${DOTFILES}/.config/"
+rsync-copy --exclude-from="${HOME}/.exclude" "${HOME}/.config/alacritty" "${DOTFILES}/.config/"
+cargo install --list > "${DOTFILES}/cargo_install_--list"
 
 }
 

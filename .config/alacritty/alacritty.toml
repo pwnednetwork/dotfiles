@@ -6,11 +6,35 @@ padding.y = 10
 
 decorations = "full"
 
+
+# ┌───────────────────────────────────────────────────────────────┐
+# │                                                               │
+# │        TYPEFACE SETTINGS                                      │
+# │                                                               │
+# └───────────────────────────────────────────────────────────────┘
+
 [font]
-normal.family = "VictorMono Nerd Font"
-bold.family = "VictorMono Nerd Font"
-italic.family = "VictorMono Nerd Font"
 size = 15.0
+# ligatures = true  # -> --> <-- -->
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style = "Regular"
+
+[font.bold]
+family = "JetBrainsMono Nerd Font" 
+style = "Bold"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style = "Italic"
+
+[font.bold_italic]
+family = "JetBrainsMono Nerd Font"
+style = "Bold Italic"
+
+
+
 
 [general]
 import = [

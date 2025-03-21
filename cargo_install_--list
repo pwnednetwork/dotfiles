@@ -6,10 +6,16 @@ du-dust v1.1.1:
     dust
 exa v0.10.1:
     exa
+eza v0.20.24:
+    eza
 glances v0.1.0:
     glances
 hyperfine v1.19.0:
     hyperfine
+kmon v1.7.1:
+    kmon
+procs v0.14.9:
+    procs
 stylua v2.0.2:
     stylua
 tree-sitter-cli v0.25.2:
