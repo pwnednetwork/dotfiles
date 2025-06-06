@@ -66,13 +66,14 @@ export PATH="$PATH:/home/$USER/.cargo/bin"
 export PATH="$PATH:/home/$USER/Qt/6.8.0/gcc_64/bin"
 export PATH="$PATH:/home/$USER/.local/bin"
 export PATH="$PATH:/home/$USER/.emacs.d/bin/"
+export PATH="$PATH:/home/agent314/.config/emacs/bin/"
 # ========== RISCV toolchain =========
 export PATH="$PATH:/opt/riscv/bin/"
 # ========= Go ================
 export PATH="$PATH:/home/$USER/go/bin"
 export ANDROID_HOME=~/Android/Sdk/
 
-export PATH="$PATH:/root/.carg/bin/"
+export PATH="$PATH:/root/.cargo/bin/"
 
 ZSH_THEME="agnoster"
 
@@ -304,7 +305,11 @@ function dotfiles-to-staging()
 rsync-copy --exclude-from="${HOME}/.exclude" "${HOME}/.config/lazyvim" "${DOTFILES}/.config/"
 rsync-copy --exclude-from="${HOME}/.exclude" "${HOME}/.config/lvim" "${DOTFILES}/.config/"
 rsync-copy --exclude-from="${HOME}/.exclude" "${HOME}/.config/alacritty" "${DOTFILES}/.config/"
+rsync-copy --exclude-from="${HOME}/.exclude" "${HOME}/.config/ghostty" "${DOTFILES}/.config/"
 cargo install --list > "${DOTFILES}/cargo_install_--list"
+
+echo "copying ghostty config to staging"                                  
+cp "${HOME}/.config/ghostty/config"  "${DOTFILES}/.config/ghostty/config" 
 
 }
 
@@ -332,6 +337,7 @@ function dotfiles-to-local() {
   rsync -avH "${DOTFILES}/.config/alacritty" "${HOME}/.config/alacritty"
   rsync -avH "${DOTFILES}/.config/lazyvim" "${HOME}/.config/lazyvim"
   rsync -avH "${DOTFILES}/.config/chadvim" "${HOME}/.config/chadvim"
+  rsync -avH "${DOTFILES}/.config/ghostty" "${HOME}/.config/ghostty"
  }
 
 
@@ -347,9 +353,9 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.                 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh                                     
                                                                                  
-                                                                                 
-
-
+ # ╔════════════════════════════════════════════════════════════════════════════╗                                                                                                                                                                                                                                              
+ # ║ Exports                                                                    ║  
+ # ╚════════════════════════════════════════════════════════════════════════════╝  
 export SDKMAN_DIR="$HOME/.sdkman"
 
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
@@ -366,3 +372,7 @@ export NVM_DIR="$HOME/.nvm"
 # Source the Lazyman .nvimsbind for nvims key binding
 # shellcheck source=.config/nvim-Lazyman/.nvimsbind
 [ -f ~/.config/nvim-Lazyman/.nvimsbind ] && source ~/.config/nvim-Lazyman/.nvimsbind
+export PATH="$PATH:~/.config/emacs/bin/"
+export PATH=/home/agent314/tools/AFLplusplus:$PATH
+
+export JAVA_HOME=/opt/openjdk-bin-21.0.6_p7/
