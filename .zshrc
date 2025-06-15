@@ -273,6 +273,12 @@ function cp2remote ()
   cp "${HOME}/${1}" "${DOTFILES}/${1}"
 }
 
+function rsync2remote()
+{
+  echo "${HOME}${1}"
+  echo "${DOTFILES}${1}"
+  rsync -avH --exclude-from="${HOME}/.exclude" "${HOME}${1}" "${DOTFILES}${1}"
+}
 function dotconfig2remote()
 {
   echo "rsyncing ${1} from ${XDG_CONFIG_HOME}${1} to ${DOTFILES}/.config/${1}\n"
@@ -297,6 +303,7 @@ function dotfiles-to-staging()
  # mkdir -p "${DOTFILES}/.config/lazyvim"  
  # mkdir -p "${DOTFILES}/.config/nvchad"  
 
+ mkdir -p "${DOTFILES}/.config/doom"  
  # dotconfig2remote "nvim"
  # dotconfig2remote "lazyvim"
  # dotconfig2remote "nvchad"
@@ -310,6 +317,13 @@ cargo install --list > "${DOTFILES}/cargo_install_--list"
 
 echo "copying ghostty config to staging"                                  
 cp "${HOME}/.config/ghostty/config"  "${DOTFILES}/.config/ghostty/config" 
+
+echo "copy emacs config folder to staging"
+#rsync2remote "/.config/doom/*"
+# temporarily just copying the doom folder with normal means
+
+  cp -r "${HOME}/.config/doom" "${DOTFILES}/.config/"
+
 
 }
 
@@ -376,3 +390,21 @@ export PATH="$PATH:~/.config/emacs/bin/"
 export PATH=/home/agent314/tools/AFLplusplus:$PATH
 
 export JAVA_HOME=/opt/openjdk-bin-21.0.6_p7/
+
+alias ascii2header="python3 /Users/agent314/ascii2header/ascii2header.py"
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/usr/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/usr/etc/profile.d/conda.sh" ]; then
+        . "/usr/etc/profile.d/conda.sh"
+    else
+        export PATH="/usr/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
