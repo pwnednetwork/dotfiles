@@ -56,7 +56,3 @@
 
 (package! nomnom
   :recipe (:host nil :repo nil :local-repo "local/nomnom"))
-
-(package! sqlite3)
-
-(package! webpaste)

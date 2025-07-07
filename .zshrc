@@ -24,9 +24,9 @@
 #
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+#if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+#fi
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
@@ -75,9 +75,14 @@ export ANDROID_HOME=~/Android/Sdk/
 
 export PATH="$PATH:/root/.cargo/bin/"
 
-ZSH_THEME="agnoster"
+#ZSH_THEME="agnoster"
+#ZSH_THEME="jonathan"
+export ZSH_THEME="darkblood"
+#ZSH_THEME="y-kali"
+#ZSH_THEME="headline/headline"
+#ZSH_THEME="ubunly"
 
-plugins=(git copyfile copybuffer docker docker-compose nmap virtualenv sudo) 
+plugins=(git copyfile copybuffer docker docker-compose nmap virtualenv sudo systemadmin colored-man-pages emoji git-prompt github jump zsh-autosuggestions zsh-syntax-highlighting) 
 
 # ╔════════════════════════════════════════════════════════════════════════════╗
 # ║ Aliases                                                                    ║
@@ -121,7 +126,7 @@ alias ubz='tar -xjf'
 
 alias rsync-copy="rsync -ahv --inplace --no-whole-file --info=progress2"
 
-alias my-ip="curl http://ipecho.net/plain; echo"
+alias my-ip='curl http://ipecho.net/plain; echo'
 
 alias lsblk="lsblk -o +fstype,label,uuid,partuuid"
 alias lazyvim="NVIM_APPNAME=lazyvim nvim"
@@ -273,22 +278,42 @@ function cp2remote ()
   cp "${HOME}/${1}" "${DOTFILES}/${1}"
 }
 
-function rsync2remote()
-{
-  echo "${HOME}${1}"
-  echo "${DOTFILES}${1}"
-  rsync -avH --exclude-from="${HOME}/.exclude" "${HOME}${1}" "${DOTFILES}${1}"
-}
-function dotconfig2remote()
-{
-  echo "rsyncing ${1} from ${XDG_CONFIG_HOME}${1} to ${DOTFILES}/.config/${1}\n"
-# rsync -avH \
-#   --exclude-from="${HOME}/.exclude" \                                   
-#   "${XDG_CONFIG_HOME}${1}" "${DOTFILES}/.config/${1}" --delete-before
- }
 
-function dotfiles-to-staging()
-{
+
+
+function rsync2remote() {
+    local source_path="${HOME}${1}"
+    local dest_path="${DOTFILES}${1}"
+    echo "Syncing from ${source_path} to ${dest_path}"
+    mkdir -p "$(dirname "${dest_path}")"
+    rsync -avH --exclude-from="${HOME}/.exclude" "${source_path}/" "${dest_path}/"
+}
+
+
+
+# simplifies copying folders of configuration files
+dotconfig-rsync() {
+    local config_name="$1"
+    
+    if [[ -z "$config_name" ]]; then
+        echo "Usage: dotconfig-rsync <config_name>" >&2
+        return 1
+    fi
+    
+    if [[ ! -d "${HOME}/.config/${config_name}" ]]; then
+        echo "Error: ${HOME}/.config/${config_name} does not exist" >&2
+        return 1
+    fi
+    
+    echo "dotconfig-rsync: copying ${config_name}"    
+    rsync-copy --exclude-from="${HOME}/.exclude" \
+        "${HOME}/.config/${config_name}" \
+        "${DOTFILES}/.config/"
+}
+
+# copies updated dotfiles to staging in prep for commit and push
+dotfiles-to-staging() {
+
   cp "${HOME}/.zshrc" "${DOTFILES}/.zshrc"
   cp2remote ".kopiaignore"
   cp2remote ".vimrc"
@@ -296,33 +321,33 @@ function dotfiles-to-staging()
   cp2remote ".tmux.cheatsheet"
   cp2remote ".exclude"
   cp2remote ".zshrc"
+
+ echo "DELETING the internals of target .config folder" 
  rm -rf "${DOTFILES}/.config/*"
  
- # mkdir -p "${DOTFILES}/.config/nvim"
- # mkdir -p "${DOTFILES}/.config/alacritty"  
- # mkdir -p "${DOTFILES}/.config/lazyvim"  
- # mkdir -p "${DOTFILES}/.config/nvchad"  
 
  mkdir -p "${DOTFILES}/.config/doom"  
- # dotconfig2remote "nvim"
- # dotconfig2remote "lazyvim"
- # dotconfig2remote "nvchad"
- # dotconfig2remote "alacritty"
  
-rsync-copy --exclude-from="${HOME}/.exclude" "${HOME}/.config/lazyvim" "${DOTFILES}/.config/"
-rsync-copy --exclude-from="${HOME}/.exclude" "${HOME}/.config/lvim" "${DOTFILES}/.config/"
-rsync-copy --exclude-from="${HOME}/.exclude" "${HOME}/.config/alacritty" "${DOTFILES}/.config/"
-rsync-copy --exclude-from="${HOME}/.exclude" "${HOME}/.config/ghostty" "${DOTFILES}/.config/"
+# rsync-copy --exclude-from="${HOME}/.exclude" "${HOME}/.config/lazyvim" "${DOTFILES}/.config/"
+# rsync-copy --exclude-from="${HOME}/.exclude" "${HOME}/.config/lvim" "${DOTFILES}/.config/"
+# rsync-copy --exclude-from="${HOME}/.exclude" "${HOME}/.config/alacritty" "${DOTFILES}/.config/"
+# rsync-copy --exclude-from="${HOME}/.exclude" "${HOME}/.config/ghostty" "${DOTFILES}/.config/"
+
+echo "dotconfig-rsyncing a bunch of important folders (vims, alacri- and ghos- tty)"
+dotconfig-rsync "lazyvim"
+dotconfig-rsync "lvim"
+dotconfig-rsync "alacritty"
+dotconfig-rsync "ghostty"
+
+echo "backup cargo install list"
 cargo install --list > "${DOTFILES}/cargo_install_--list"
 
 echo "copying ghostty config to staging"                                  
 cp "${HOME}/.config/ghostty/config"  "${DOTFILES}/.config/ghostty/config" 
 
 echo "copy emacs config folder to staging"
-#rsync2remote "/.config/doom/*"
+rsync2remote "/.config/doom/"
 # temporarily just copying the doom folder with normal means
-
-  cp -r "${HOME}/.config/doom" "${DOTFILES}/.config/"
 
 
 }
@@ -408,3 +433,9 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
+
+
+export SSLKEYLOGFILE=~/.ssl-key.log
+
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"

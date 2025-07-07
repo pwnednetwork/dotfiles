@@ -128,14 +128,6 @@
       :desc "Insert current date"
       "c i" #'nomnom-insert-date)
 
-;; webpaste
-(use-package webpaste
-  :ensure t
-  :bind (("C-c C-p C-b" . webpaste-paste-buffer)
-         ("C-c C-p C-r" . webpaste-paste-region)
-         ("C-c C-p C-p" . webpaste-paste-buffer-or-region)))
-
-
 ;; org-agenda
 (after! org
   (setq org-agenda-files
@@ -150,15 +142,3 @@
       (erase-buffer)
       (insert document)
       (goto-char (point-min)))))
-                                        ;
-;; org-roam
-
-;;( use-package org-roam
-;;  :ensure t
-;;  :custom
-;;  (org-roam-directory "~/org-roam")
-;;  :bind (("C-c n l" . org-roam-buffer-toggle)
-;;         ("C-c n f" . org-roam-node-find)
-;;         ("C-c n i" . org-roam-node-insert))
-;;  :config
-;;  (org-roam-setup))
