@@ -15,6 +15,7 @@ decorations = "full"
 
 [font]
 size = 15.0
+
 # ligatures = true  # -> --> <-- -->
 
 [font.normal]
@@ -38,7 +39,7 @@ style = "Bold Italic"
 
 [general]
 import = [
-    "~/.config/alacritty/themes/themes/github_dark_high_contrast.toml"
+    "~/.config/alacritty/themes/themes/kanagawa_dragon.toml"
 ]
 [[keyboard.bindings]]
 key = "C"

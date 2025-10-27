@@ -1,9 +1,3 @@
-;; -*- no-byte-compile: t; -*-
-;;; $DOOMDIR/packages.el
-
-;; To install a package with Doom you must declare them here and run 'doom sync'
-;; on the command line, then restart Emacs for the changes to take effect -- or
-
 
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;; (package! some-package)
@@ -60,3 +54,34 @@
 (package! sqlite3)
 
 (package! webpaste)
+
+(package! org-special-block-extras)
+
+(package! org-bullets)
+
+(package! elvish-mode)
+(package! ob-elvish)
+(package! fish-mode)
+
+
+(package! zig-mode)
+
+(package! dockerfile-mode)
+
+
+(package! iedit)
+
+(package! annotate)
+
+(package! smartparens)
+
+
+(package! zenburn-theme)
+(package! sublime-themes)
+(package! jazz-theme)
+(package! inkpot-theme)
+(package! darktooth-theme)
+
+(package! cherry-blossom-theme)
+
+(package! treemacs-all-the-icons)

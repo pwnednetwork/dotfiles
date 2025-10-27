@@ -28,7 +28,7 @@
 # └───┼──────────┼─────────────────────────────────────────────────────────────┘
 #     └──────────┘                                                              
 
-theme                              = "Dark Pastel"
+theme                              = "Nocturnal Winter"
 background-opacity                 = 0.90
 background-blur                    = false
 
@@ -84,7 +84,7 @@ window-subtitle                     = working-directory
 #     └──────────┘                                                              
 
 
-scrollback-limit                   = 125000
+scrollback-limit                   = 104857600 
 link-url                           = true
 #vt-kam-allowed                     = false
 
@@ -99,7 +99,7 @@ link-url                           = true
 
 cursor-opacity                     = 0.9
 cursor-style                       = block
-cursor-style-blink                 = false
+cursor-style-blink                 = true
 cursor-click-to-move               = false
 #shell-integration-features         = no-cursor
 
@@ -125,7 +125,7 @@ copy-on-select                     = false
 # └───┼──────────┼─────────────────────────────────────────────────────────────┘
 #     └──────────┘                                                              
 
-gtk-single-instance                = true
+gtk-single-instance                = false 
 gtk-tabs-location                  = bottom
 #gtk-adwaita                       = false
 gtk-opengl-debug                   = false
@@ -155,3 +155,4 @@ keybind = performable:ctrl+c=copy_to_clipboard
 keybind = ctrl+y=paste_from_clipboard
 
 
+keybind = shift+enter=text:\x1b\r
